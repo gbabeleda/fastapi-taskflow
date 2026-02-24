@@ -7,8 +7,6 @@ authors = [{ name = "Gio Abeleda", email = "gioabeleda@gmail.com" }]
 requires-python = ">=3.13"
 dependencies = []
 
-[project.scripts]
-fastapi-taskflow = "fastapi_taskflow:main"
 
 [build-system]
 requires = ["hatchling"]
