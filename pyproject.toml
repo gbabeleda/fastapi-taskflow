@@ -3,9 +3,7 @@ name = "fastapi-taskflow"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-authors = [
-    { name = "Gio Abeleda", email = "gioabeleda@gmail.com" }
-]
+authors = [{ name = "Gio Abeleda", email = "gioabeleda@gmail.com" }]
 requires-python = ">=3.13"
 dependencies = []
 
@@ -17,7 +15,36 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.uv.workspace]
-members = [
-    "packages/api",
-    "packages/worker",
+members = ["packages/api", "packages/worker"]
+
+[dependency-groups]
+dev = ["pre-commit>=4.5.1", "ruff>=0.15.2"]
+
+# Ruff
+[tool.ruff]
+target-version = "py313" # generate fixes compatible with python 3.13
+line-length = 100        # shared line length; formatter is source of truth
+fix = true               # auto-fix safe issues in pre-commit
+unsafe-fixes = false     # never apply potentially breaking fixes
+
+[tool.ruff.lint]
+extend-select = [
+    "I",  # import sorting (isort replacement)
+    "N",  # naming conventions (pep8: classes, functions, constants)
+    "UP", # modernize python syntax as versions evolve
+    "B",  # catch common bugs and design mistakes
+]
+
+ignore = [
+    "E501", # line length handled by formatter
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = [
+    "F401", # allow re-exports
+    "E402", # allow imports not at top of file
+]
+"alembic/env.py" = [
+    "F403", # allow star imports for model discovery
+    "F401", # allow unused imports (models needed for autogenerate)
 ]
