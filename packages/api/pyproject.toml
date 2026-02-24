@@ -1,5 +1,5 @@
 [project]
-name = "fastapi-taskflow"
+name = "api"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -10,13 +10,8 @@ requires-python = ">=3.13"
 dependencies = []
 
 [project.scripts]
-fastapi-taskflow = "fastapi_taskflow:main"
+api = "api:main"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
-
-[tool.uv.workspace]
-members = [
-    "packages/api",
-]
