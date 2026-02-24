@@ -10,6 +10,7 @@ resolution-markers = [
 members = [
     "api",
     "fastapi-taskflow",
+    "shared",
     "worker",
 ]
 
@@ -50,12 +51,14 @@ source = { editable = "packages/api" }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "pydantic-settings" },
+    { name = "shared" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.132.0" },
     { name = "pydantic-settings", specifier = ">=2.13.1" },
+    { name = "shared", editable = "packages/shared" },
 ]
 
 [[package]]
@@ -754,6 +757,11 @@ wheels = [
 ]
 
 [[package]]
+name = "shared"
+version = "0.1.0"
+source = { editable = "packages/shared" }
+
+[[package]]
 name = "shellingham"
 version = "1.5.4"
 source = { registry = "https://pypi.org/simple" }
@@ -980,3 +988,9 @@ wheels = [
 name = "worker"
 version = "0.1.0"
 source = { editable = "packages/worker" }
+dependencies = [
+    { name = "shared" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "shared", editable = "packages/shared" }]
