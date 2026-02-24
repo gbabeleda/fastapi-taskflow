@@ -7,7 +7,9 @@ authors = [
     { name = "Gio Abeleda", email = "gioabeleda@gmail.com" }
 ]
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "shared",
+]
 
 [project.scripts]
 worker = "worker:main"
@@ -15,3 +17,6 @@ worker = "worker:main"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.uv.sources]
+shared = { workspace = true }
