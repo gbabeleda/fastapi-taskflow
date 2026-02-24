@@ -1,0 +1,23 @@
+{
+  // WORKSPACE STANDARDS ONLY
+  // Personal preferences (themes, fonts, UI) belong in User Settings
+
+  // File quality - matches pre-commit hooks
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+
+  // Format on save
+  "editor.formatOnSave": true,
+
+  // Python - Ruff for everything
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports.ruff": "explicit",
+      "source.fixAll.ruff": "explicit"
+    }
+  },
+
+  // Python interpreter - uv venv
+  "python.defaultInterpreterPath": ".venv/bin/python"
+}
