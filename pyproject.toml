@@ -13,11 +13,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.uv.workspace]
-members = [
-    "packages/api",
-    "packages/worker",
-    "packages/shared",
-]
+members = ["packages/api", "packages/worker", "packages/shared"]
 
 [dependency-groups]
 dev = ["pre-commit>=4.5.1", "ruff>=0.15.2"]
@@ -46,7 +42,10 @@ ignore = [
     "F401", # allow re-exports
     "E402", # allow imports not at top of file
 ]
-"alembic/env.py" = [
+"packages/shared/alembic/env.py" = [
     "F403", # allow star imports for model discovery
     "F401", # allow unused imports (models needed for autogenerate)
 ]
+
+[tool.ruff.lint.isort]
+known-first-party = ["shared", "api", "worker"]
