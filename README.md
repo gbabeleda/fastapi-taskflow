@@ -120,3 +120,56 @@ known-first-party = ["shared", "api", "worker"]
     "F401", # allow unused imports (models needed for autogenerate)
 ]
 ```
+
+### Add Containerization
+
+```bash
+docker compose up --build
+```
+
+#### Workspace vs single-process containerization
+
+In a single-process repo, the Dockerfile, `.dockerignore`, and build context all
+live at the same root. Everything is collocated and Docker's default behaviour
+just works.
+
+A uv workspace breaks that assumption in one important way: **no package can be
+built in isolation**. `uv sync --package api` needs the workspace root's
+`uv.lock` and `packages/shared/` source to resolve the `shared` local
+dependency. The build context must therefore always be the workspace root, not
+the individual package directory.
+
+This has a cascading effect on where things live:
+
+| Concern | Single-process | Workspace |
+|---|---|---|
+| Dockerfile | root | `packages/<service>/Dockerfile` |
+| Build context | `.` (root = package) | `.` (root ≠ package) |
+| `.dockerignore` | root (collocated with context) | root (must match build context) |
+| `docker-compose.yml` | root | root |
+
+**`.dockerignore` does not live next to the Dockerfile.** Docker resolves it
+relative to the build context, not the Dockerfile path. Since the context is
+always the workspace root, a single `.dockerignore` at root covers all builds.
+
+#### Two-stage build and layer caching
+
+Each Dockerfile uses a builder/runtime split with a deliberate layer order:
+
+1. **Bind-mount manifests and install third-party deps** — `uv.lock` and all
+   `pyproject.toml` files are mounted (not copied) so they never become a layer.
+   `--no-install-workspace` installs only third-party deps; workspace packages
+   are skipped because their source doesn't exist yet. This layer is cached until
+   any manifest changes.
+2. **Copy workspace source** — only invalidates the layers below it when code changes.
+3. **Build wheels** (`uv build --wheel`) — produces a self-contained `.whl` for
+   `api` (or `worker`) and one for `shared`. Both are needed because `shared` is
+   a local dep, not on PyPI.
+4. **Runtime stage installs the wheels via pip** — no uv, no build tools, no
+   source tree in the final image.
+
+#### Migrator service
+
+TODO: add once the health check endpoint is wired to the DB. The migrator will
+run `alembic upgrade head` as a one-shot service before `api` and `worker` start.
+The scaffolding is already in `docker-compose.yml` as commented-out config.
